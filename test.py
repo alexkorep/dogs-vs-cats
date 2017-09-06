@@ -17,6 +17,8 @@ def generate_data(size):
     import numpy as np
     #data = np.random.random((10000, 100))
     #labels = np.random.randint(2, size=(10000, 1))
+    #data = np.random.random((10000, 2))
+    #labels = np.sum(data, (1,))
     data = np.random.random((10000, 1))
     labels = data*2
     return data, labels
@@ -25,14 +27,21 @@ def generate_data(size):
 model = Sequential()
 model.add(Dense(1, input_dim=1))
 model.compile(optimizer='rmsprop',
-              loss='binary_crossentropy',
+              loss='mse',
               metrics=['accuracy'])
 
-x_train, y_train = generate_data(1000)
-x_test, y_test = generate_data(10)
+x_train, y_train = generate_data(10000)
+x_test, y_test = generate_data(100)
 
-model.fit(x_train, y_train, epochs=1000, batch_size=32)
+model.fit(x_train, y_train, epochs=30, batch_size=32)
 
-loss_and_metrics = model.evaluate(x_test, y_test, batch_size=128)
+loss_and_metrics = model.evaluate(x_test, y_test, batch_size=16)
+#print(loss_and_metrics)
 
-print(loss_and_metrics)
+pred = model.predict(x_test, batch_size=32, verbose=0)
+
+print("expected:")
+print(y_test)
+print("actual:")
+print(pred)
+
