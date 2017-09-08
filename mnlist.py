@@ -1,7 +1,7 @@
 import keras
 from keras.datasets import mnist
 from keras.models import Sequential
-from keras.layers import Dense
+from keras.layers import Dense, Conv2D, MaxPooling2D, Dropout, Flatten
 from keras import backend as K
 
 num_classes = 10
@@ -35,23 +35,49 @@ print('x_train shape:', x_train.shape)
 print('y_train shape:', y_train.shape)
 print('input_shape shape:', input_shape)
 
+
 model = Sequential()
-model.add(Dense(10, input_shape=input_shape))
-model.add(Dense(1))
-#model.add(Dense(1, input_dim=4))
+# Add convolution here
+model.add(Flatten(input_shape=input_shape))
+model.add(Dense(num_classes, activation='softmax'))
 model.compile(optimizer='rmsprop',
               loss='mse',
               metrics=['accuracy'])
 
 model.fit(x_train, y_train, epochs=30, batch_size=32)
 
+"""
+model = Sequential()
+#model.add(Conv2D(32, kernel_size=(28, 28),
+#                 activation='relu',
+#                 input_shape=input_shape))
+#model.add(Conv2D(64, (3, 3), activation='relu'))
+#model.add(MaxPooling2D(pool_size=(2, 2)))
+#model.add(Dropout(0.25))
+model.add(Flatten(input_shape=input_shape))
+#model.add(Dense(128, activation='relu'))
+#model.add(Dropout(0.5))
+model.add(Dense(num_classes, activation='softmax'))
+
+model.compile(loss=keras.losses.categorical_crossentropy,
+              optimizer=keras.optimizers.Adadelta(),
+              metrics=['accuracy'])
+
+model.fit(x_train, y_train,
+          batch_size=32,
+          epochs=30,
+          verbose=1,
+          validation_data=(x_test, y_test))
+"""
+
 loss_and_metrics = model.evaluate(x_test, y_test, batch_size=16)
 #print(loss_and_metrics)
 
+"""
 pred = model.predict(x_test, batch_size=32, verbose=0)
 
 print("expected:")
 print(y_test)
 print("actual:")
 print(pred)
-
+"""
